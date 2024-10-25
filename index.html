@@ -16,7 +16,7 @@
 
 <h2>Extended Time Calculator</h2>
 
-<label for="start-time">Exam Start Time: (HH:MM AM/PM)</label>
+<label for="start-time">Exam Start Time:</label>
 <input type="time" id="start-time" required>
 
 <label for="exam-length">Exam Length (minutes):</label>
@@ -60,9 +60,15 @@
     if (endHours > 12) endHours -= 12;
     if (endHours === 0) endHours = 12;  // Handle midnight/noon cases
 
+    // Convert total minutes to HH:MM format
+    const totalHours = Math.floor(totalExamMinutes / 60);
+    const totalMinutesOnly = totalExamMinutes % 60;
+
     // Display the results
     document.getElementById("output").innerText = 
-      `End Time: ${endHours.toString().padStart(2, '0')}:${endMinutesOnly.toString().padStart(2, '0')} ${endAmPm}\nTotal Minutes: ${totalExamMinutes}`;
+      `End Time: ${endHours.toString().padStart(2, '0')}:${endMinutesOnly.toString().padStart(2, '0')} ${endAmPm}\n` +
+      `Total Minutes: ${totalExamMinutes} minutes\n` +
+      `Total Hours: ${totalHours} hours and ${totalMinutesOnly.toString().padStart(2, '0')} minutes`;
   }
 
   function clearInputs() {
