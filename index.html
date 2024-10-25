@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extended Time Calculator</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+    h2 { color: #333; }
+    label { display: block; margin-top: 15px; }
+    input, select, button { width: 100%; padding: 10px; margin-top: 5px; }
+    #output { margin-top: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<h2>Extended Time Calculator</h2>
+
+<label for="start-time">Exam Start Time: (HH:MM AM/PM)</label>
+<input type="time" id="start-time" required>
+
+<label for="exam-length">Exam Length (minutes):</label>
+<input type="number" id="exam-length" min="1" required>
+
+<label for="multiplier">Multiplier:</label>
+<select id="multiplier">
+  <option value="1.5">1.5x</option>
+  <option value="2">2x</option>
+</select>
+
+<button onclick="calculateExtendedTime()">Calculate Extended Time</button>
+<button onclick="clearInputs()">Clear</button>
+
+<div id="output"></div>
+
+<script>
+  function calculateExtendedTime() {
+    const startTime = document.getElementById("start-time").value;
+    const examLength = parseInt(document.getElementById("exam-length").value);
+    const multiplier = parseFloat(document.getElementById("multiplier").value);
+
+    if (!startTime || isNaN(examLength)) {
+      document.getElementById("output").innerText = "Please fill in all fields.";
+      return;
+    }
+
+    // Convert start time to hours and minutes
+    let [hours, minutes] = startTime.split(":").map(Number);
+
+    // Calculate total exam time in minutes (including multiplier)
+    const totalExamMinutes = Math.round(examLength * multiplier);
+    const endMinutes = hours * 60 + minutes + totalExamMinutes;
+
+    // Calculate end time in hours and minutes
+    let endHours = Math.floor(endMinutes / 60);
+    let endMinutesOnly = endMinutes % 60;
+
+    // Adjust for 24-hour clock
+    const endAmPm = endHours >= 12 ? "PM" : "AM";
+    if (endHours > 12) endHours -= 12;
+    if (endHours === 0) endHours = 12;  // Handle midnight/noon cases
+
+    // Display the results
+    document.getElementById("output").innerText = 
+      `End Time: ${endHours.toString().padStart(2, '0')}:${endMinutesOnly.toString().padStart(2, '0')} ${endAmPm}\nTotal Minutes: ${totalExamMinutes}`;
+  }
+
+  function clearInputs() {
+    document.getElementById("start-time").value = "";
+    document.getElementById("exam-length").value = "";
+    document.getElementById("multiplier").value = "1.5";
+    document.getElementById("output").innerText = "";
+  }
+</script>
+
+</body>
+</html>
