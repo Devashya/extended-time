@@ -7,89 +7,119 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f9f9f9;
+      background-color: #f0f4f8;
       color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 400px;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border: 1px solid #d1d9e0;
     }
 
     header {
-      display: flex;
-      align-items: center;
+      text-align: center;
       margin-bottom: 20px;
     }
 
     header img {
       height: 50px;
-      margin-right: 15px;
     }
 
     h2 {
       color: #003366;
-      text-align: center;
-      flex-grow: 1;
-      margin: 0;
+      margin-bottom: 10px;
     }
 
     label {
       display: block;
-      margin-top: 15px;
       font-weight: bold;
       color: #003366;
+      margin-top: 15px;
     }
 
-    input, select, button {
-      width: 100%;
-      padding: 10px;
+    .time-select, .exam-length-select {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       margin-top: 5px;
-      border: 1px solid #d1d1d1;
-      border-radius: 5px;
     }
 
-    #output {
-      margin-top: 20px;
-      font-weight: bold;
+    .small-input, .medium-input {
+      width: 60px;
+      padding: 8px;
+      font-size: 1em;
+      border: 1px solid #c1d3eb;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .medium-input {
+      width: 80px;
+    }
+
+    .toggle {
+      width: 70px;
+      padding: 8px;
+      text-align: center;
+      cursor: pointer;
       background-color: #e9f0fa;
-      padding: 15px;
       border: 1px solid #c1d3eb;
       border-radius: 5px;
       color: #003366;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .toggle:hover {
+      background-color: #d9e7f5;
     }
 
     button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
       background-color: #ffb500;
       color: #524940;
       border: none;
+      border-radius: 5px;
       cursor: pointer;
       font-weight: bold;
-      font-size: medium;
+      font-size: 1em;
+      transition: background-color 0.3s;
     }
 
     button:hover {
       background-color: #f8d16d;
     }
 
-    @media (max-width: 600px) {
-      body {
-        padding: 10px;
-      }
+    #output, #warning {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 1em;
     }
 
-    .time-select {
-      display: flex;
-      gap: 10px;
-    }
-
-    .am-pm-toggle {
-      width: 80px;
-      padding: 10px;
-      text-align: center;
-      cursor: pointer;
+    #output {
       background-color: #e9f0fa;
       border: 1px solid #c1d3eb;
-      border-radius: 5px;
       color: #003366;
+    }
+
+    #warning {
+      display: none;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      color: #721c24;
     }
 
     .footer {
@@ -102,60 +132,98 @@
 </head>
 <body>
 
-<header>
-  <img src="AU logo.png" alt="Adelphi University Logo">
-</header>
+<div class="container">
+  <header>
+    <img src="AU logo.png" alt="Adelphi University Logo">
+    <h2>Extended Time Calculator</h2>
+  </header>
 
-<h2>Extended Time Calculator</h2>
+  <label for="start-time">Exam Start Time:</label>
+  <div class="time-select">
+    <input type="number" id="start-hour" class="small-input" min="1" max="12" placeholder="HH" required>
+    <input type="number" id="start-minute" class="small-input" min="0" max="59" placeholder="MM" required>
+    <div id="am-pm-toggle" class="toggle" onclick="toggleAmPm()">AM</div>
+  </div>
 
-<label for="start-time">Exam Start Time (HH:MM):</label>
-<div class="time-select">
-  <input type="time" id="start-time" required>
-  <div id="am-pm-toggle" class="am-pm-toggle" onclick="toggleAmPm()">AM</div>
-</div>
+  <div id="warning"></div>
 
-<label for="exam-length">Exam Length (minutes):</label>
-<input type="number" id="exam-length" min="1" required>
+  <label for="exam-length">Exam Length (minutes):</label>
+  <div class="exam-length-select">
+    <input type="number" class="medium-input" id="exam-length" min="1" required>
+    <div id="multiplier-toggle" class="toggle" onclick="toggleMultiplier()">1.5x</div>
+  </div>
+  
+  <button onclick="calculateExtendedTime()">Calculate Extended Time</button>
+  <button onclick="clearInputs()">Clear</button>
 
-<label for="multiplier">Multiplier:</label>
-<select id="multiplier">
-  <option value="1.5">1.5x</option>
-  <option value="2">2x</option>
-</select>
+  <div id="output"></div>
 
-<button onclick="calculateExtendedTime()">Calculate Extended Time</button>
-<button onclick="clearInputs()">Clear</button>
-
-<div id="output"></div>
-
-<div class="footer">
-  © Student Access Office | Adelphi University
+  <div class="footer">
+    © Student Access Office | Adelphi University
+  </div>
 </div>
 
 <script>
   let amPm = "AM";
+  let multiplier = 1.5;
 
   function toggleAmPm() {
     amPm = amPm === "AM" ? "PM" : "AM";
     document.getElementById("am-pm-toggle").innerText = amPm;
   }
 
-  function calculateExtendedTime() {
-    const startTime = document.getElementById("start-time").value;
-    const examLength = parseInt(document.getElementById("exam-length").value);
-    const multiplier = parseFloat(document.getElementById("multiplier").value);
+  function toggleMultiplier() {
+    multiplier = multiplier === 1.5 ? 2 : 1.5;
+    document.getElementById("multiplier-toggle").innerText = `${multiplier}x`;
+  }
 
-    if (!startTime || isNaN(examLength)) {
+  document.getElementById("start-hour").addEventListener("input", function() {
+    const hour = parseInt(this.value);
+    if (hour < 1 || hour > 12) {
+      displayWarning("Hour must be between 1 and 12.");
+      this.value = "";
+    } else {
+      hideWarning();
+    }
+  });
+
+  document.getElementById("start-minute").addEventListener("input", function() {
+    const minute = parseInt(this.value);
+    if (minute < 0 || minute > 59) {
+      displayWarning("Minutes must be between 0 and 59.");
+      this.value = "";
+    } else if (this.value.length === 1) {
+      this.value = this.value.padStart(2, '0');
+      hideWarning();
+    }
+  });
+
+  function displayWarning(message) {
+    const warningDiv = document.getElementById("warning");
+    warningDiv.style.display = "block";
+    warningDiv.innerText = message;
+  }
+
+  function hideWarning() {
+    document.getElementById("warning").style.display = "none";
+  }
+
+  function calculateExtendedTime() {
+    const startHour = parseInt(document.getElementById("start-hour").value);
+    const startMinute = parseInt(document.getElementById("start-minute").value);
+    const examLength = parseInt(document.getElementById("exam-length").value);
+
+    if (isNaN(startHour) || isNaN(startMinute) || isNaN(examLength)) {
       document.getElementById("output").innerText = "Please fill in all fields.";
       return;
     }
 
-    let [hours, minutes] = startTime.split(":").map(Number);
+    let hours = startHour;
     if (amPm === "PM" && hours < 12) hours += 12;
     if (amPm === "AM" && hours === 12) hours = 0;
 
     const totalExamMinutes = Math.ceil(examLength * multiplier);
-    const endMinutes = hours * 60 + minutes + totalExamMinutes;
+    const endMinutes = hours * 60 + startMinute + totalExamMinutes;
 
     let endHours = Math.floor(endMinutes / 60) % 24;
     let endMinutesOnly = endMinutes % 60;
@@ -174,12 +242,15 @@
   }
 
   function clearInputs() {
-    document.getElementById("start-time").value = "";
+    document.getElementById("start-hour").value = "";
+    document.getElementById("start-minute").value = "";
     document.getElementById("exam-length").value = "";
-    document.getElementById("multiplier").value = "1.5";
     document.getElementById("output").innerText = "";
     amPm = "AM";
     document.getElementById("am-pm-toggle").innerText = "AM";
+    multiplier = 1.5;
+    document.getElementById("multiplier-toggle").innerText = "1.5x";
+    hideWarning();
   }
 </script>
 
