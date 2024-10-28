@@ -5,15 +5,95 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Extended Time Calculator</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-    h2 { color: #333; }
-    label { display: block; margin-top: 15px; }
-    input, select, button { width: 100%; padding: 10px; margin-top: 5px; }
-    #output { margin-top: 20px; font-weight: bold; }
-    .time-select { display: flex; gap: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    header img {
+      height: 50px;
+      margin-right: 15px;
+    }
+
+    h2 {
+      color: #003366;
+      text-align: center;
+      flex-grow: 1;
+      margin: 0;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #003366;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #d1d1d1;
+      border-radius: 5px;
+    }
+
+    #output {
+      margin-top: 20px;
+      font-weight: bold;
+      background-color: #e9f0fa;
+      padding: 15px;
+      border: 1px solid #c1d3eb;
+      border-radius: 5px;
+      color: #003366;
+    }
+
+    button {
+      background-color: #ffb500;
+      color: #524940;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: medium;
+    }
+
+    button:hover {
+      background-color: #f8d16d;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+    }
+
+    .time-select {
+      display: flex;
+      gap: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 0.9em;
+      color: #666;
+      margin-top: 30px;
+    }
   </style>
 </head>
 <body>
+
+<header>
+  <img src="AU logo.png" alt="Adelphi University Logo">
+</header>
 
 <h2>Extended Time Calculator</h2>
 
@@ -39,6 +119,10 @@
 <button onclick="clearInputs()">Clear</button>
 
 <div id="output"></div>
+
+<div class="footer">
+  © Student Access Office | Adelphi University
+</div>
 
 <script>
   function calculateExtendedTime() {
