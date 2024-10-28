@@ -81,6 +81,17 @@
       gap: 10px;
     }
 
+    .am-pm-toggle {
+      width: 80px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      background-color: #e9f0fa;
+      border: 1px solid #c1d3eb;
+      border-radius: 5px;
+      color: #003366;
+    }
+
     .footer {
       text-align: center;
       font-size: 0.9em;
@@ -100,10 +111,7 @@
 <label for="start-time">Exam Start Time (HH:MM):</label>
 <div class="time-select">
   <input type="time" id="start-time" required>
-  <select id="am-pm">
-    <option value="AM">AM</option>
-    <option value="PM">PM</option>
-  </select>
+  <div id="am-pm-toggle" class="am-pm-toggle" onclick="toggleAmPm()">AM</div>
 </div>
 
 <label for="exam-length">Exam Length (minutes):</label>
@@ -125,9 +133,15 @@
 </div>
 
 <script>
+  let amPm = "AM";
+
+  function toggleAmPm() {
+    amPm = amPm === "AM" ? "PM" : "AM";
+    document.getElementById("am-pm-toggle").innerText = amPm;
+  }
+
   function calculateExtendedTime() {
     const startTime = document.getElementById("start-time").value;
-    const amPm = document.getElementById("am-pm").value;
     const examLength = parseInt(document.getElementById("exam-length").value);
     const multiplier = parseFloat(document.getElementById("multiplier").value);
 
@@ -163,8 +177,9 @@
     document.getElementById("start-time").value = "";
     document.getElementById("exam-length").value = "";
     document.getElementById("multiplier").value = "1.5";
-    document.getElementById("am-pm").value = "AM";
     document.getElementById("output").innerText = "";
+    amPm = "AM";
+    document.getElementById("am-pm-toggle").innerText = "AM";
   }
 </script>
 
