@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+i<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -58,7 +58,7 @@
     if (amPm === "AM" && hours === 12) hours = 0;
 
     // Calculate total exam time in minutes (including multiplier)
-    const totalExamMinutes = Math.round(examLength * multiplier);
+    const totalExamMinutes = Math.ceil(examLength * multiplier);
     const endMinutes = hours * 60 + minutes + totalExamMinutes;
 
     // Calculate end time in hours and minutes
