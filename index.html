@@ -10,6 +10,7 @@
     label { display: block; margin-top: 15px; }
     input, select, button { width: 100%; padding: 10px; margin-top: 5px; }
     #output { margin-top: 20px; font-weight: bold; }
+    .time-select { display: flex; gap: 10px; }
   </style>
 </head>
 <body>
@@ -17,7 +18,13 @@
 <h2>Extended Time Calculator</h2>
 
 <label for="start-time">Exam Start Time:</label>
-<input type="time" id="start-time" required>
+<div class="time-select">
+  <input type="time" id="start-time" required>
+  <select id="am-pm">
+    <option value="AM">AM</option>
+    <option value="PM">PM</option>
+  </select>
+</div>
 
 <label for="exam-length">Exam Length (minutes):</label>
 <input type="number" id="exam-length" min="1" required>
@@ -36,6 +43,7 @@
 <script>
   function calculateExtendedTime() {
     const startTime = document.getElementById("start-time").value;
+    const amPm = document.getElementById("am-pm").value;
     const examLength = parseInt(document.getElementById("exam-length").value);
     const multiplier = parseFloat(document.getElementById("multiplier").value);
 
@@ -44,21 +52,29 @@
       return;
     }
 
+    // Convert start time to 24-hour format based on AM/PM
     let [hours, minutes] = startTime.split(":").map(Number);
+    if (amPm === "PM" && hours < 12) hours += 12;
+    if (amPm === "AM" && hours === 12) hours = 0;
 
+    // Calculate total exam time in minutes (including multiplier)
     const totalExamMinutes = Math.round(examLength * multiplier);
     const endMinutes = hours * 60 + minutes + totalExamMinutes;
 
-    let endHours = Math.floor(endMinutes / 60);
+    // Calculate end time in hours and minutes
+    let endHours = Math.floor(endMinutes / 60) % 24;
     let endMinutesOnly = endMinutes % 60;
-
     const endAmPm = endHours >= 12 ? "PM" : "AM";
+
+    // Adjust to 12-hour format
     if (endHours > 12) endHours -= 12;
     if (endHours === 0) endHours = 12;  // Handle midnight/noon cases
 
+    // Convert total minutes to HH:MM format
     const totalHours = Math.floor(totalExamMinutes / 60);
     const totalMinutesOnly = totalExamMinutes % 60;
 
+    // Display the results
     document.getElementById("output").innerText = 
       `End Time: ${endHours.toString().padStart(2, '0')}:${endMinutesOnly.toString().padStart(2, '0')} ${endAmPm}\n` +
       `Total Minutes: ${totalExamMinutes} minutes\n` +
@@ -69,6 +85,7 @@
     document.getElementById("start-time").value = "";
     document.getElementById("exam-length").value = "";
     document.getElementById("multiplier").value = "1.5";
+    document.getElementById("am-pm").value = "AM";
     document.getElementById("output").innerText = "";
   }
 </script>
