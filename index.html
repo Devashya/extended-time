@@ -192,8 +192,7 @@
     if (minute < 0 || minute > 59) {
       displayWarning("Minutes must be between 0 and 59.");
       this.value = "";
-    } else if (this.value.length === 1) {
-      this.value = this.value.padStart(2, '0');
+    } else {
       hideWarning();
     }
   });
