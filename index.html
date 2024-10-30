@@ -148,11 +148,13 @@
 
   <div id="warning"></div>
 
-  <label for="exam-length">Exam Length (minutes):</label>
+  <label for="exam-length-hours">Exam Length:</label>
   <div class="exam-length-select">
-    <input type="number" class="medium-input" id="exam-length" min="1" required>
+    <input type="number" class="small-input" id="exam-length-hours" min="0" placeholder="HH">
+    <input type="number" class="small-input" id="exam-length-minutes" min="0" max="59" placeholder="MM">
     <div id="multiplier-toggle" class="toggle" onclick="toggleMultiplier()">1.5x</div>
   </div>
+  
   
   <button onclick="calculateExtendedTime()">Calculate Extended Time</button>
   <button onclick="clearInputs()">Clear</button>
@@ -209,49 +211,52 @@
   }
 
   function calculateExtendedTime() {
-    const startHour = parseInt(document.getElementById("start-hour").value);
-    const startMinute = parseInt(document.getElementById("start-minute").value);
-    const examLength = parseInt(document.getElementById("exam-length").value);
+  const startHour = parseInt(document.getElementById("start-hour").value);
+  const startMinute = parseInt(document.getElementById("start-minute").value);
+  const examLengthHours = parseInt(document.getElementById("exam-length-hours").value) || 0;
+  const examLengthMinutes = parseInt(document.getElementById("exam-length-minutes").value) || 0;
 
-    if (isNaN(startHour) || isNaN(startMinute) || isNaN(examLength)) {
-      document.getElementById("output").innerText = "Please fill in all fields.";
-      return;
-    }
-
-    let hours = startHour;
-    if (amPm === "PM" && hours < 12) hours += 12;
-    if (amPm === "AM" && hours === 12) hours = 0;
-
-    const totalExamMinutes = Math.ceil(examLength * multiplier);
-    const endMinutes = hours * 60 + startMinute + totalExamMinutes;
-
-    let endHours = Math.floor(endMinutes / 60) % 24;
-    let endMinutesOnly = endMinutes % 60;
-    const endAmPm = endHours >= 12 ? "PM" : "AM";
-
-    if (endHours > 12) endHours -= 12;
-    if (endHours === 0) endHours = 12;
-
-    const totalHours = Math.floor(totalExamMinutes / 60);
-    const totalMinutesOnly = totalExamMinutes % 60;
-
-    document.getElementById("output").innerText = 
-      `End Time: ${endHours.toString().padStart(2, '0')}:${endMinutesOnly.toString().padStart(2, '0')} ${endAmPm}\n` +
-      `Total Minutes: ${totalExamMinutes} minutes\n` +
-      `Total Hours: ${totalHours} hours and ${totalMinutesOnly.toString().padStart(2, '0')} minutes`;
+  if (isNaN(startHour) || isNaN(startMinute) || (isNaN(examLengthHours) && isNaN(examLengthMinutes))) {
+    document.getElementById("output").innerText = "Please fill in all fields.";
+    return;
   }
 
-  function clearInputs() {
+  let hours = startHour;
+  if (amPm === "PM" && hours < 12) hours += 12;
+  if (amPm === "AM" && hours === 12) hours = 0;
+
+  const totalExamMinutes = Math.ceil((examLengthHours * 60 + examLengthMinutes) * multiplier);
+  const endMinutes = hours * 60 + startMinute + totalExamMinutes;
+
+  let endHours = Math.floor(endMinutes / 60) % 24;
+  let endMinutesOnly = endMinutes % 60;
+  const endAmPm = endHours >= 12 ? "PM" : "AM";
+
+  if (endHours > 12) endHours -= 12;
+  if (endHours === 0) endHours = 12;
+
+  const totalHours = Math.floor(totalExamMinutes / 60);
+  const totalMinutesOnly = totalExamMinutes % 60;
+
+  document.getElementById("output").innerText = 
+    `End Time: ${endHours.toString().padStart(2, '0')}:${endMinutesOnly.toString().padStart(2, '0')} ${endAmPm}\n` +
+    `Total Minutes: ${totalExamMinutes} minutes\n` +
+    `Total Hours: ${totalHours} hours and ${totalMinutesOnly.toString().padStart(2, '0')} minutes`;
+}
+
+
+function clearInputs() {
     document.getElementById("start-hour").value = "";
     document.getElementById("start-minute").value = "00";
-    document.getElementById("exam-length").value = "";
+    document.getElementById("exam-length-hours").value = "";
+    document.getElementById("exam-length-minutes").value = "";
     document.getElementById("output").innerText = "";
     amPm = "AM";
     document.getElementById("am-pm-toggle").innerText = "AM";
     multiplier = 1.5;
     document.getElementById("multiplier-toggle").innerText = "1.5x";
     hideWarning();
-  }
+}
 </script>
 
 </body>
